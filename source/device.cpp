@@ -427,7 +427,6 @@ static bool is24BitAudio(AM_MEDIA_TYPE *mt)
 bool HDevice::SetupAudioCapture(IBaseFilter *filter, AudioConfig &config)
 {
 	ComPtr<IPin> pin;
-	MediaTypePtr defaultMT;
 	bool success;
 	HRESULT hr;
 

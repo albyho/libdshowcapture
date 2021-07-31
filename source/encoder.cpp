@@ -307,21 +307,21 @@ bool SetAvermediaEncoderConfig(IBaseFilter *encoder, VideoEncoderConfig &config)
 	return true;
 }
 
-bool HVideoEncoder::SetConfig(VideoEncoderConfig &config)
+bool HVideoEncoder::SetConfig(VideoEncoderConfig & configLocal)
 {
 	ComPtr<IBaseFilter> filter;
 	ComPtr<IBaseFilter> crossbar;
 
-	if (config.name.empty() && config.path.empty()) {
+	if (configLocal.name.empty() && configLocal.path.empty()) {
 		Warning(L"No video encoder name or path specified");
 		return false;
 	}
 
-	bool success = GetDeviceFilter(KSCATEGORY_ENCODER, config.name.c_str(),
-				       config.path.c_str(), &filter);
+	bool success = GetDeviceFilter(KSCATEGORY_ENCODER, configLocal.name.c_str(),
+		configLocal.path.c_str(), &filter);
 	if (!success) {
 		Warning(L"Video encoder '%s': %s not found",
-			config.name.c_str(), config.path.c_str());
+			configLocal.name.c_str(), configLocal.path.c_str());
 		return false;
 	}
 
@@ -330,7 +330,7 @@ bool HVideoEncoder::SetConfig(VideoEncoderConfig &config)
 		return false;
 	}
 
-	this->config = config;
+	this->config = configLocal;
 
 	if (!SetupEncoder(filter)) {
 		Warning(L"Failed to set up encoder");
@@ -340,7 +340,7 @@ bool HVideoEncoder::SetConfig(VideoEncoderConfig &config)
 		Warning(L"Failed to set up crossbar");
 		return false;
 	}
-	if (!SetAvermediaEncoderConfig(device, config)) {
+	if (!SetAvermediaEncoderConfig(device, configLocal)) {
 		Warning(L"Failed to set Avermedia encoder settings");
 		return false;
 	}

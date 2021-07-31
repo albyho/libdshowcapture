@@ -64,7 +64,9 @@ public:
 	{
 		AM_MEDIA_TYPE *ptr =
 			(AM_MEDIA_TYPE *)CoTaskMemAlloc(sizeof(*ptr));
-		memset(ptr, 0, sizeof(*ptr));
+		if (ptr) {
+			memset(ptr, 0, sizeof(*ptr));
+		}
 		CopyMediaType(ptr, &type);
 		return ptr;
 	}

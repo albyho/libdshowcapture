@@ -75,7 +75,7 @@ struct HVideoEncoder {
 
 	bool SetupEncoder(IBaseFilter *filter);
 
-	bool SetConfig(VideoEncoderConfig &config);
+	bool SetConfig(VideoEncoderConfig &configLocal);
 
 	bool Encode(unsigned char *frame[DSHOW_MAX_PLANES],
 		    size_t linesize[DSHOW_MAX_PLANES], long long timestampStart,
