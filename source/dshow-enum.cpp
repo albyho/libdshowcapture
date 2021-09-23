@@ -462,6 +462,20 @@ static bool EnumDevice(const GUID &type, IMoniker *deviceInfo,
 	if (FAILED(hr))
 		return true;
 
+#define MAX_PATH_LENGTH_INTERNAL 512
+	// 获取设备Moniker名  
+	devicePath.bstrVal = reinterpret_cast<LPOLESTR>(CoTaskMemAlloc(MAX_PATH_LENGTH_INTERNAL));
+	if (devicePath.bstrVal != nullptr) {
+		hr = deviceInfo->GetDisplayName(nullptr, nullptr, &devicePath.bstrVal);
+		if (SUCCEEDED(hr)) {
+			;
+		}
+		// 注意：不释放。将造成可接受的内存泄露。
+		//CoTaskMemFree(pOleDisplayName);
+	}
+
+	//propertyData->Read(L"DevicePath", &devicePath, NULL);
+
 	/* workaround to a crash in decklink drivers; if no decklink device
 	 * is plugged in to the system, it will still try to enumerate the
 	 * decklink audio device, but will crash when trying to bind it to
@@ -472,13 +486,11 @@ static bool EnumDevice(const GUID &type, IMoniker *deviceInfo,
 		return true;
 	}
 
-	propertyData->Read(L"DevicePath", &devicePath, NULL);
-
 	hr = deviceInfo->BindToObject(NULL, 0, IID_IBaseFilter,
 				      (void **)&filter);
 	if (SUCCEEDED(hr)) {
 		if (!callback(param, filter, deviceName.bstrVal,
-			      devicePath.bstrVal))
+			devicePath.bstrVal))
 			return false;
 	}
 
